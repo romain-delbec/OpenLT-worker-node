@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Upload Portfolio</title>
+  <link href="/static/css/tailwind.css" rel="stylesheet">
+</head>
+<body class="p-4">
+  <h1 class="text-xl font-bold">Upload Portfolio</h1>
+  <form action="/upload" method="post" enctype="multipart/form-data" class="mt-4">
+    <input type="file" name="file" class="border p-2" />
+    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded ml-2">Upload</button>
+  </form>
+</body>
+</html>
