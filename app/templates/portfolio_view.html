@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ file.filename }}</title>
+</head>
+<body>
+    <h1>{{ file.filename }}</h1>
+    <p>Path: {{ file.filepath }}</p>
+    <!-- Add more details as necessary -->
+    <div>
+        {{ file|safe }}
+    </div>
+</body>
+</html>
