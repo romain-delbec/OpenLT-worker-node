@@ -7,9 +7,7 @@
     <h1>List of Files</h1>
     <ul>
         {% for file in files %}
-            <li>
-                <a href="{{ url_for('portfolio_view', filename=file.filename) }}">{{ file.filename }}</a>
-            </li>
+            <li>{{ file.filename }}</a></li>
         {% endfor %}
     </ul>
 </body>
