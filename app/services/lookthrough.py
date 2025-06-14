@@ -1,13 +1,11 @@
 import pandas as pd
 from .indexing import load_index
-from .file_handler import get_csv_path, load_portfolio
 
 def run_lookthrough(portfolio_id, navdate):    
     child_ids, navdate = load_portfolio_childs(portfolio_id=portfolio_id, navdate=navdate)
     
     for child in child_ids:
         if check_local_availability(portfolio_id=child, navdate=navdate) == False:
-            print(f'{child} not available')
             fetch_from_central(portfolio_id=child, navdate=navdate)
         
 
@@ -33,4 +31,4 @@ def check_local_availability(portfolio_id, navdate):
         else: return False
     
 def fetch_from_central(portfolio_id, navdate):
-    print("Not available locally.")
+    print(f"{portfolio_id} on {navdate} not available locally.")

@@ -4,6 +4,7 @@ import pandas as pd
 from fastapi import UploadFile, HTTPException
 from app.config import DATA_DIR
 from .indexing import add_owned_entry, add_child_entry, add_received_entry
+from .lookthrough import run_lookthrough
 
 portfolios_dir = os.path.join(DATA_DIR, "portfolios")
 received_dir = os.path.join(DATA_DIR, "received_portfolios")
@@ -56,7 +57,8 @@ def save_csv(file: UploadFile) -> str:
                 child_id=row['14_Identification_code_of_the_instrument'],
                 navdate=row['6_Valuation_date']
             )
-
+            
+    run_lookthrough(portfolio_id=portfolio_id, navdate=navdate)
     
     os.makedirs(portfolios_dir, exist_ok=True)
     path = os.path.join(portfolios_dir, file.filename)
@@ -107,6 +109,7 @@ def save_received_csv(file: UploadFile) -> str:
                 navdate=row['6_Valuation_date']
             )
 
+    run_lookthrough(portfolio_id=portfolio_id, navdate=navdate)
     
     os.makedirs(received_dir, exist_ok=True)
     path = os.path.join(received_dir, file.filename)
