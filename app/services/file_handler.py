@@ -119,5 +119,31 @@ def portfolio_to_html(filename):
     df = pd.read_csv(os.path.join(portfolios_dir, filename))
     return df.to_html(classes="table table-bordered", index=False)
 
-def get_csv_path(filename: str) -> str:
-    return os.path.join(portfolios_dir, filename)
+def get_csv_path(portfolio_id, navdate, status):
+    if status not in ['owned', 'received']:
+        raise ValueError("Status must be either 'owned' or 'received'.")
+    elif status == 'owned':
+        index_path = os.path.join(DATA_DIR, "index", "owned_index.csv")
+    else:
+        index_path = os.path.join(DATA_DIR, "index", "received_index.csv")
+    
+    df = pd.read_csv(index_path)
+
+    match = df[(df['portfolio_id'] == portfolio_id) & (df['navdate'] == navdate)]
+
+    if not match.empty:
+        return match.iloc[0]['filename']
+    else:
+        return None
+    
+def load_portfolio(filename, status):
+    if status not in ['owned', 'received']:
+        raise ValueError("Status must be either 'owned' or 'received'.")
+    elif status == 'owned':
+        filepath = os.path.join(portfolios_dir, filename)
+    else:
+        filepath = os.path.join(received_dir, filename)
+    
+    df = pd.read_csv(filepath)
+    
+    return df

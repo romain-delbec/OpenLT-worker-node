@@ -9,7 +9,7 @@ from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
 from app.services.file_handler import save_csv, save_received_csv, get_csv_path, portfolio_to_html
 from app.services.transfer import send_file_ws, fetch_file_ws
 from app.services.lookthrough import run_lookthrough
-from app.services.indexing import load_owned_index, add_received_entry
+from app.services.indexing import load_index, add_received_entry
 from app.deps import templates
 from app.config import DATA_DIR
 
@@ -29,15 +29,14 @@ async def upload_file(file: UploadFile = File(...)):
 
 @router.get("/files/")
 async def get_files(request: Request):
-    files = load_owned_index()
+    files = 'load_owned_index()'
 
     return templates.TemplateResponse("files.html", {"request": request, "files": files})
 
-@router.post("/trigger-lookthrough/{filename}")
-async def trigger_lookthrough(filename: str):
-    path = get_csv_path(filename)
-    results = run_lookthrough(path)
-    return {"status": "calculated", "results": results}
+@router.get("/trigger-lookthrough/{portfolio_id}/{navdate}")
+async def trigger_lookthrough(portfolio_id: str, navdate: str):
+    run_lookthrough(portfolio_id=portfolio_id, navdate=navdate)
+    return {"status": "calculated"}
 
 @router.post("/webhook/receive-file")
 async def receive_file(file: UploadFile = File(...)):

@@ -43,13 +43,19 @@ def add_received_entry(filename, portfolio_id, navdate):
     
     df.to_csv(file_path, index=False)
     
-def load_owned_index():
-    file_path = os.path.join(index_dir, "owned_index.csv")
-    df = pd.read_csv(file_path)
+def load_index(index):
+    if index not in ['owned', 'received', 'owned_childs']:
+        raise ValueError("Status must be either 'owned' or 'received' or 'owned_childs")
+    elif index == 'owned':
+        index_path = os.path.join(DATA_DIR, "index", "owned_index.csv")
+    elif index == 'received':
+        index_path = os.path.join(DATA_DIR, "index", "received_index.csv")
+    else:
+        index_path = os.path.join(DATA_DIR, "index", "owned_childs_index.csv")
+
+    df = pd.read_csv(index_path)
     
-    files = df.to_dict(orient="records")
-    
-    return files
+    return df
 
 def fetch_remote_address():
     address = 'http://localhost:8000'
