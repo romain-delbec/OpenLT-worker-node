@@ -5,7 +5,7 @@ import pandas as pd
 from pydantic import BaseModel
 from pathlib import Path
 from fastapi import APIRouter, Request, UploadFile, File, WebSocket, WebSocketDisconnect, HTTPException, Form
-from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
+from fastapi.responses import HTMLResponse, FileResponse, JSONResponse, RedirectResponse
 from app.services.file_handler import save_csv, save_received_csv, get_csv_path, portfolio_to_html, load_portfolio, get_load_portfolio
 from app.services.transfer import send_file_ws, fetch_file_ws
 from app.services.lookthrough import run_lookthrough, check_local_availability
@@ -29,7 +29,8 @@ async def upload_form(request: Request):
 @router.post("/upload/")
 async def upload_file(file: UploadFile = File(...)):
     saved_path = save_csv(file)
-    return {"status": "uploaded", "file": saved_path}
+    #return {"status": "uploaded", "file": saved_path}
+    return RedirectResponse(url="/portfolios", status_code=303)
 
 @router.get("/portfolios/", response_class=HTMLResponse)
 async def upload_form(request: Request):
