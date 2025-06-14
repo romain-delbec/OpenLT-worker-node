@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="p-4">
+
+ <table class="min-w-full border border-gray-300 text-sm">
+  <thead class="bg-gray-100">
+    <tr>
+      <th class="p-2 text-left w-4"></th>
+      <th class="p-2 text-left">Instrument ID</th>
+      <th class="p-2 text-left">Instrument name</th>
+      <th class="p-2 text-left">Portfolio currency</th>
+      <th class="p-2 text-left">Clean valuation</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in data %}
+      {% set instrument_id = row['14_Identification_code_of_the_instrument'] %}
+      {% set type_code = row['15_Type_of_identification_code_for_the_instrument'] %}
+      <tbody x-data="{ open: false }" class="border-b border-gray-200">
+        <tr @click="open = !open" class="cursor-pointer hover:bg-gray-50 transition-colors">
+          <td class="p-2 text-center text-gray-500">
+            {% if type_code == 99 and instrument_id in child_data %}
+              <span x-text="open ? '↓' : '→'"></span>
+            {% else %}
+              <span class="text-gray-300">•</span>
+            {% endif %}
+          </td>
+          <td class="p-2">{{ instrument_id }}</td>
+          <td class="p-2">{{ row['17_Instrument_name'] }}</td>
+          <td class="p-2">{{ row['21_Quotation_currency_(A)'] }}</td>
+          <td class="p-2">{{ row['24_Market_valuation_in_portfolio_currency_(B)'] }}</td>
+        </tr>
+        {% if type_code == 99 and instrument_id in child_data %}
+          <tr x-show="open" x-transition class="bg-gray-50">
+            <td colspan="5" class="p-0">
+              <table class="w-full text-xs">
+                <tbody>
+                  {% for subrow in child_data[instrument_id]["rows"] %}
+                    <tr class="border-t border-gray-200">
+                      <td class="p-2 w-4"></td> <!-- empty for arrow alignment -->
+                      <td class="p-2 text-left">{{ subrow['14_Identification_code_of_the_instrument'] }}</td>
+                      <td class="p-2 text-left">{{ subrow['17_Instrument_name'] }}</td>
+                      <td class="p-2 text-left">{{ subrow['21_Quotation_currency_(A)'] }}</td>
+                      <td class="p-2 text-left">{{ subrow['24_Market_valuation_in_portfolio_currency_(B)'] }}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        {% endif %}
+      </tbody>
+    {% endfor %}
+  </tbody>
+</table>
+
+</body>
+</html>
