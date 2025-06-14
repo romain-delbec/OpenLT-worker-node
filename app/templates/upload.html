@@ -1,14 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Upload Portfolio</title>
-  <link href="/static/css/tailwind.css" rel="stylesheet">
-</head>
-<body class="p-4">
-  <h1 class="text-xl font-bold">Upload Portfolio</h1>
-  <form action="/upload" method="post" enctype="multipart/form-data" class="mt-4">
-    <input type="file" name="file" class="border p-2" />
-    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded ml-2">Upload</button>
-  </form>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Upload Portfolio{% endblock %}
+
+{% block content %}
+  <h1 class="text-2xl font-bold mb-4">Upload Portfolio</h1>
+  
+  <div class="bg-white p-6 rounded-xl shadow">
+      <h2 class="text-xl font-semibold mb-4">Upload a New Portfolio</h2>
+      <form action="/upload/" method="post" enctype="multipart/form-data" class="flex items-center space-x-4">
+          <input type="file" name="file" accept=".csv" required class="block w-full text-sm text-gray-700 border border-gray-300 rounded-lg cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+          <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-medium transition">
+              Upload
+          </button>
+      </form>
+  </div>
+{% endblock %}

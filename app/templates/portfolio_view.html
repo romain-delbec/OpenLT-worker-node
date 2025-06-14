@@ -1,12 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-</head>
-<body class="p-4">
+{% extends "base.html" %}
 
- <table class="min-w-full border border-gray-300 text-sm">
+{% block title %}Portfolio view{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">Portfolio view</h1>
+
+<table class="min-w-full border border-gray-300 text-sm">
   <thead class="bg-gray-100">
     <tr>
       <th class="p-2 text-left w-4"></th>
@@ -57,6 +56,4 @@
     {% endfor %}
   </tbody>
 </table>
-
-</body>
-</html>
+{% endblock %}

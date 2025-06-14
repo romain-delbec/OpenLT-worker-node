@@ -4,7 +4,7 @@ import pandas as pd
 from fastapi import UploadFile, HTTPException
 from app.config import DATA_DIR
 from .indexing import add_owned_entry, add_child_entry, add_received_entry
-from .lookthrough import run_lookthrough
+from .lookthrough import run_lookthrough, check_local_availability
 
 portfolios_dir = os.path.join(DATA_DIR, "portfolios")
 received_dir = os.path.join(DATA_DIR, "received_portfolios")
@@ -148,5 +148,18 @@ def load_portfolio(filename, status):
         filepath = os.path.join(received_dir, filename)
     
     df = pd.read_csv(filepath)
+    
+    return df
+
+def get_load_portfolio(portfolio_id, navdate):
+    if check_local_availability(portfolio_id=portfolio_id, navdate=navdate) == 'owned': status='owned'
+    else: status='received'
+    
+    filepath = get_csv_path(portfolio_id=portfolio_id, navdate=navdate, status=status)
+    
+    if filepath == None:
+        return None
+    
+    df = load_portfolio(filename=filepath, status=status)
     
     return df
