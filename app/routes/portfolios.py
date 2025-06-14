@@ -46,7 +46,7 @@ async def get_files(request: Request):
 
     return templates.TemplateResponse("files.html", {"request": request, "files": files})
 
-@router.get("/trigger-lookthrough/{portfolio_id}/{navdate}/")
+@router.post("/trigger-lookthrough/{portfolio_id}/{navdate}/")
 async def trigger_lookthrough(portfolio_id: str, navdate: str):
     run_lookthrough(portfolio_id=portfolio_id, navdate=navdate)
     return {"status": "calculated"}
@@ -130,7 +130,9 @@ COLUMNS_TO_DISPLAY = [
 async def index(request: Request, portfolio_id: str, nav_date: str):
     main_df = get_load_portfolio(portfolio_id=portfolio_id, navdate=nav_date)
     
-    main_df = main_df[COLUMNS_TO_DISPLAY + ["15_Type_of_identification_code_for_the_instrument"]]  # needed for logic
+    portfolio_name = main_df['3_Portfolio_name'][0]
+    
+    main_df = main_df[COLUMNS_TO_DISPLAY + ["15_Type_of_identification_code_for_the_instrument"]]
     data = main_df.to_dict(orient="records")
 
     child_data = {}
@@ -154,5 +156,8 @@ async def index(request: Request, portfolio_id: str, nav_date: str):
     return templates.TemplateResponse("portfolio_view.html", {
         "request": request,
         "data": data,
-        "child_data": child_data
+        "child_data": child_data,
+        "portfolio_id": portfolio_id,
+        "navdate": nav_date,
+        "portfolio_name": portfolio_name
     })

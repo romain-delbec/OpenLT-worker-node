@@ -3,7 +3,14 @@
 {% block title %}Portfolio view{% endblock %}
 
 {% block content %}
-<h1 class="text-2xl font-bold mb-4">Portfolio view</h1>
+<div class="flex items-center justify-between mb-4">
+  <h1 class="text-2xl font-bold">{{ portfolio_name }}</h1>
+  <form action="/trigger-lookthrough/{{ portfolio_id }}/{{ navdate }}/" method="post">
+    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2 rounded-lg shadow transition">
+      Run Lookthrough
+    </button>
+  </form>
+</div>
 
 <table class="min-w-full border border-gray-300 text-sm">
   <thead class="bg-gray-100">
