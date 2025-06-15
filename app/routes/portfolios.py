@@ -49,8 +49,9 @@ async def get_files(request: Request):
 
 @router.post("/trigger-lookthrough/{portfolio_id}/{navdate}/")
 async def trigger_lookthrough(portfolio_id: str, navdate: str):
-    run_lookthrough(portfolio_id=portfolio_id, navdate=navdate)
-    return {"status": "calculated"}
+    await run_lookthrough(portfolio_id=portfolio_id, navdate=navdate)
+    #return {"status": "calculated"}
+    return RedirectResponse(url=f"/portfolios/{portfolio_id}/{navdate}/", status_code=303)
 
 @router.post("/webhook/receive-file/")
 async def receive_file(file: UploadFile = File(...)):

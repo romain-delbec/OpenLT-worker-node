@@ -1,7 +1,11 @@
 import pandas as pd
+import asyncio
+import requests
+import json
+import websockets
 from .indexing import load_index
 
-def run_lookthrough(portfolio_id, navdate):    
+async def run_lookthrough(portfolio_id, navdate):    
     child_ids, navdate = load_portfolio_childs(portfolio_id=portfolio_id, navdate=navdate)
     
     for child in child_ids:
@@ -31,4 +35,20 @@ def check_local_availability(portfolio_id, navdate):
         else: return False
     
 def fetch_from_central(portfolio_id, navdate):
-    print(f"{portfolio_id} on {navdate} not available locally.")
+    url = "http://localhost:8000/api/lookup"
+    payload = {
+        "portfolio_id": portfolio_id,
+        "navdate": navdate
+    }
+    response = requests.post(url, json=payload)
+    print(f'CENTRAL RESPONSE: {response.json()}')
+    
+def upload_to_central(server_address, portfolio_id, navdate):
+    url = "http://localhost:8000/upload/"
+    payload = {
+        "server_address": server_address,
+        "portfolio_id": portfolio_id,
+        "navdate": navdate
+    }
+    response = requests.post(url, json=payload)
+    print(f'UPLOAD RESPONSE: {response.json()}')
