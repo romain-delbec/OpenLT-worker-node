@@ -5,6 +5,7 @@ import json
 import websockets
 from .indexing import load_index
 from .transfer import send_file_request
+from app.config import SERVER_ADDRESS, CENTRAL_ADDRESS
 
 async def run_lookthrough(portfolio_id, navdate):    
     child_ids, navdate = load_portfolio_childs(portfolio_id=portfolio_id, navdate=navdate)
@@ -39,7 +40,7 @@ def check_local_availability(portfolio_id, navdate):
         else: return False
     
 def fetch_from_central(portfolio_id, navdate):
-    url = "http://localhost:8000/api/lookup"
+    url = f"{CENTRAL_ADDRESS}/api/lookup"
     payload = {
         "portfolio_id": portfolio_id,
         "navdate": navdate
@@ -50,7 +51,7 @@ def fetch_from_central(portfolio_id, navdate):
     print(f'CENTRAL RESPONSE: {response_data}')
     
 def upload_to_central(server_address, portfolio_id, navdate):
-    url = "http://localhost:8000/upload/"
+    url = f"{CENTRAL_ADDRESS}/upload"
     payload = {
         "server_address": server_address,
         "portfolio_id": portfolio_id,

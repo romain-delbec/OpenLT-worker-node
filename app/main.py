@@ -6,7 +6,6 @@ from app import deps
 
 app = FastAPI()
 
-# Mount static files
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 # Middleware (for development)

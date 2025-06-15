@@ -2,7 +2,7 @@ import os
 import shutil
 import pandas as pd
 from fastapi import UploadFile, HTTPException
-from app.config import DATA_DIR
+from app.config import DATA_DIR, SERVER_ADDRESS
 from .indexing import add_owned_entry, add_child_entry, add_received_entry
 from .lookthrough import run_lookthrough, check_local_availability, upload_to_central
 
@@ -48,7 +48,7 @@ def save_csv(file: UploadFile) -> str:
         raise HTTPException(status_code=400, detail="File contains multiple navdates for portfolio.")
     
     add_owned_entry(filename=file.filename, portfolio_id=portfolio_id, navdate=navdate)
-    upload_to_central(server_address='localhost:8001', portfolio_id=portfolio_id, navdate=navdate)
+    upload_to_central(server_address=SERVER_ADDRESS, portfolio_id=portfolio_id, navdate=navdate)
     
     for index, row in df.iterrows():
         if row['15_Type_of_identification_code_for_the_instrument'] == 99:

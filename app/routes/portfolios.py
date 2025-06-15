@@ -7,11 +7,10 @@ from pathlib import Path
 from fastapi import APIRouter, Request, UploadFile, File, WebSocket, WebSocketDisconnect, HTTPException, Form
 from fastapi.responses import HTMLResponse, FileResponse, JSONResponse, RedirectResponse
 from app.services.file_handler import save_csv, save_received_csv, get_csv_path, portfolio_to_html, load_portfolio, get_load_portfolio
-from app.services.transfer import send_file_ws, fetch_file_ws
 from app.services.lookthrough import run_lookthrough, check_local_availability
 from app.services.indexing import load_index, add_received_entry
 from app.deps import templates
-from app.config import DATA_DIR
+from app.config import DATA_DIR, SERVER_ADDRESS
 
 router = APIRouter()
 
