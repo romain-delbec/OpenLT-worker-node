@@ -57,67 +57,32 @@ async def trigger_lookthrough(portfolio_id: str, navdate: str):
 async def receive_file(file: UploadFile = File(...)):
     save_received_csv(file)
     return {"status": "received", "filename": file.filename}
-
-@router.get("/request-file/", response_class=HTMLResponse)
-async def get_request_form():
-    return """
-    <html>
-        <head><title>Request File</title></head>
-        <body>
-            <h2>Request File from Sender</h2>
-            <form action="/request-file" method="post">
-                Sender URL: <input type="text" name="sender_url" value="http://localhost:8000"><br>
-                File Name: <input type="text" name="file_name"><br>
-                <input type="submit" value="Request File">
-            </form>
-        </body>
-    </html>
-    """
-
-@router.post("/request-file/")
-async def request_file_form(
-    sender_url: str = Form(...),
-    file_name: str = Form(...)
-):
-    receiver_webhook = "http://localhost:8001/webhook/receive-file"
-    
-    response = requests.post(
-        f"{sender_url}/webhook/send-file",
-        json={"file_name": file_name, "receiver_url": receiver_webhook}
-    )
-    
-    print('Got response')
-
-    result = response.json()
-    return HTMLResponse(f"""
-        <html>
-            <body>
-                <h3>Request Sent</h3>
-                <p>Status: {response.status_code}</p>
-                <p>Response: {result}</p>
-                <a href="/request-file">Back</a>
-            </body>
-        </html>
-    """)
     
 class FileRequest(BaseModel):
-    file_name: str
+    portfolio_id: str
+    navdate: str
     receiver_url: str
 
 @router.post("/webhook/send-file/")
 def send_file(request: FileRequest):
-    file_path = os.path.join(UPLOAD_DIR, request.file_name)
-    
+    file_path = os.path.join(UPLOAD_DIR, get_csv_path(portfolio_id=request.portfolio_id, navdate=request.navdate, status="owned"))
+
+    print(file_path)
+    print(request.receiver_url)
+
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail="File not found")
 
+    file_name = f"{request.portfolio_id}_{request.navdate}.csv"
+
     with open(file_path, "rb") as f:
-        files = {"file": (request.file_name, f)}
+        files = {"file": (file_name, f)}
         try:
             response = requests.post(request.receiver_url, files=files, timeout=10)
             print(f"Status: {response.status_code}, Body: {response.text}")
         except Exception as e:
             print(f"Exception: {e}")
+            raise HTTPException(status_code=500, detail=str(e))
 
     return {"status": "sent", "to": request.receiver_url, "response": response.json()}
 
